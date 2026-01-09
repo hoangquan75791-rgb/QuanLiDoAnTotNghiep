@@ -1,0 +1,38 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Quản lý Đề tài') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+                <div class="p-6 text-gray-900">
+                    <h3 class="font-bold text-lg mb-4">Thêm Đề tài mới</h3>
+
+                    <form method="POST" action="{{ route('detai.store') }}">
+                        @csrf <div>
+                            <x-input-label for="ten_de_tai" value="Tên Đề tài" />
+                            <x-text-input id="ten_de_tai" class="block mt-1 w-full" type="text" name="ten_de_tai" :value="old('ten_de_tai')" required autofocus />
+                            <x-input-error :messages="$errors->get('ten_de_tai')" class="mt-2" />
+                        </div>
+
+                        <div class="mt-4">
+                            <x-input-label for="mo_ta" value="Mô tả chi tiết" />
+                            <textarea id="mo_ta" name="mo_ta" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('mo_ta') }}</textarea>
+                            <x-input-error :messages="$errors->get('mo_ta')" class="mt-2" />
+                        </div>
+
+                        <div class="flex items-center justify-end mt-4">
+                            <x-primary-button>
+                                {{ __('Lưu Đề tài') }}
+                            </x-primary-button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </div>
+    </div>
+</x-app-layout>

@@ -13,15 +13,20 @@ return new class extends Migration
 {
     Schema::create('bai_nop', function (Blueprint $table) {
         $table->id();
-        $table->string('file_url'); // Đường dẫn tới file đã nộp
-        $table->timestamp('thoi_gian_nop')->useCurrent();
-        $table->integer('lan_nop')->default(1);
-
-        // Quan hệ Hợp thành: 1 Bài nộp thuộc về 1 Đồ án
-        // 'cascadeOnDelete()' nghĩa là nếu Đồ án bị xóa, Bài nộp này cũng tự động bị xóa.
-        $table->foreignId('do_an_id')->constrained('do_an')->cascadeOnDelete();
+        $table->string('tieu_de');
+        $table->string('file_path');
+        $table->string('trang_thai')->default('da_nop');
+        
+        // === HAI DÒNG QUAN TRỌNG NÀY ĐANG BỊ THIẾU HOẶC SAI ===
+        $table->unsignedBigInteger('sinh_vien_id');
+        $table->unsignedBigInteger('do_an_id');
+        // ======================================================
 
         $table->timestamps();
+
+        // (Tùy chọn) Tạo khóa ngoại để bảo vệ dữ liệu
+        // $table->foreign('sinh_vien_id')->references('id')->on('users');
+        // $table->foreign('do_an_id')->references('id')->on('do_an');
     });
 }
 

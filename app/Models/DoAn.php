@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
-// Thêm 3 dòng này để import các Model liên quan
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+// Đảm bảo đã import các Model liên quan
 use App\Models\User;
 use App\Models\BaiNop;
 use App\Models\NhanXet;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\YeuCau; // Model mới
 
 class DoAn extends Model
 {
@@ -16,65 +19,68 @@ class DoAn extends Model
 
     /**
      * Tên bảng mà model này quản lý.
-     * Laravel thường tự đoán, nhưng khai báo rõ ràng sẽ tốt hơn.
      * @var string
      */
     protected $table = 'do_an';
 
     /**
      * Các thuộc tính có thể được gán hàng loạt (mass-assignable).
-     * @var array
      */
     protected $fillable = [
         'ten_de_tai',
         'mo_ta',
         'trang_thai',
-        'diem_so',
+        'diem_so', // <-- Mới thêm
         'sinh_vien_id',
         'giang_vien_id',
+        'giang_vien_phan_bien_id', // <-- Mới thêm
     ];
-
-    // =================================================================
-    // == BẮT ĐẦU CÁC MỐI QUAN HỆ (ĐÃ THÊM TỪ BIỂU ĐỒ LỚP) ==
-    // =================================================================
 
     /**
      * Lấy sinh viên thực hiện đồ án này (Quan hệ 1-1 ngược)
      */
-    public function sinhVien()
+    public function sinhVien(): BelongsTo
     {
-        // 'sinh_vien_id' là khóa ngoại trên bảng 'do_an'
         return $this->belongsTo(User::class, 'sinh_vien_id');
     }
 
     /**
      * Lấy giảng viên hướng dẫn đồ án này (Quan hệ 1-N ngược)
      */
-    public function giangVienHuongDan()
+    public function giangVienHuongDan(): BelongsTo
     {
-        // 'giang_vien_id' là khóa ngoại trên bảng 'do_an'
         return $this->belongsTo(User::class, 'giang_vien_id');
+    }
+
+    /**
+     * Lấy giảng viên phản biện đồ án này (Quan hệ 1-N ngược) - MỚI
+     */
+    public function giangVienPhanBien(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'giang_vien_phan_bien_id');
     }
 
     /**
      * Lấy tất cả các bài nộp của đồ án này (Quan hệ Hợp thành 1-N)
      */
-    public function baiNops()
+    public function baiNops(): HasMany
     {
-        // 'do_an_id' là khóa ngoại trên bảng 'bai_nop'
         return $this->hasMany(BaiNop::class, 'do_an_id');
     }
 
     /**
      * Lấy tất cả nhận xét của đồ án này (Quan hệ Hợp thành 1-N)
      */
-    public function nhanXets()
+    public function nhanXets(): HasMany
     {
-        // 'do_an_id' là khóa ngoại trên bảng 'nhan_xet'
         return $this->hasMany(NhanXet::class, 'do_an_id');
     }
-
-    // =================================================================
-    // == KẾT THÚC CÁC MỐI QUAN HỆ ==
-    // =================================================================
+    
+    /**
+     * Lấy tất cả yêu cầu (gia hạn/phúc khảo) của đồ án này (Quan hệ Hợp thành 1-N) - MỚI
+     */
+    public function yeuCaus(): HasMany
+    {
+        return $this->hasMany(YeuCau::class, 'do_an_id');
+    }
 }
